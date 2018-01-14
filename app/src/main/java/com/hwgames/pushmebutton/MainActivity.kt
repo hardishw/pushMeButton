@@ -16,7 +16,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         progressBar.progress = 0
 
-        object:CountDownTimer(10000,100){
+        val timer = object:CountDownTimer(10000,100){
             var progress = 0
             override fun onFinish() {
                 progressBar.progress = 100
@@ -34,6 +34,7 @@ class MainActivity : AppCompatActivity() {
 
         moveButton()
         pushMe.setOnClickListener({
+            timer.cancel()
             setContentView(R.layout.activity_winner)
         })
     }
