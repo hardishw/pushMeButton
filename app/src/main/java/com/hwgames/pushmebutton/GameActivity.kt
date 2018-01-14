@@ -19,7 +19,9 @@ class GameActivity : AppCompatActivity() {
 
     var currentLevel = 0
     var time = 0
+    val MAX_LEVEL = 11
     var winner = false
+    var stage = 1
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -74,6 +76,11 @@ class GameActivity : AppCompatActivity() {
                 }
                 10 -> {
                     time = 1000
+                    game()
+                }
+                11 -> {
+                    stage = 2
+                    time = 10000
                     game()
                 }
             }

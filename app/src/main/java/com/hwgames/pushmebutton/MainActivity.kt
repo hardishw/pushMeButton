@@ -16,7 +16,6 @@ class MainActivity : AppCompatActivity() {
     private fun createMenu(){
         setContentView(R.layout.activity_main)
 
-        startGame.text = "Start Game"
         startGame.setOnClickListener({
             val intent = Intent(this,GameActivity::class.java)
             startActivity(intent)

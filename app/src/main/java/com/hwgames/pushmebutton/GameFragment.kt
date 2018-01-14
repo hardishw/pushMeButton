@@ -1,6 +1,7 @@
 package com.hwgames.pushmebutton
 
 
+import android.app.Activity
 import android.app.Fragment
 import android.os.Bundle
 import android.os.CountDownTimer
@@ -11,21 +12,53 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ProgressBar
-import kotlinx.android.synthetic.main.game.*
 import java.lang.Math.round
 import java.util.*
+import kotlin.collections.HashMap
+
 
 /**
  * Created by hardi on 14/01/2018.
  */
 class GameFragment : Fragment() {
+    val buttonMap = HashMap<Button,Int>()
+    var stage = 0
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View {
         val view = inflater!!.inflate(R.layout.game,container,false)
         val gameActivity = activity as GameActivity
+        stage = gameActivity.stage
         val progressBar = view.findViewById<ProgressBar>(R.id.progressBar)
-        val pushMe = view.findViewById<Button>(R.id.pushMe)
+        val pushMe1 = view.findViewById<Button>(R.id.pushMe1)
+        val pushMe2 = view.findViewById<Button>(R.id.pushMe2)
+
+        var switchColours:CountDownTimer? = null
+
         progressBar.progress = 0
+        buttonMap.put(pushMe1,R.color.green)
+        buttonMap.put(pushMe2,R.color.red)
+        pushMe1.setBackgroundResource(R.color.green)
+
+        if (stage != 2){
+            pushMe2.visibility = View.INVISIBLE
+        } else{
+            pushMe2.setBackgroundResource(R.color.red)
+            moveButton(view,pushMe2.id)
+            switchColours = object: CountDownTimer(gameActivity.time.toLong(),600){
+                override fun onFinish() {
+
+                }
+
+                override fun onTick(p0: Long) {
+                    for (button in buttonMap.keys){
+                        switchColour(button)
+                    }
+                }
+            }.start()
+        }
+        moveButton(view,pushMe1.id)
+
+
 
         val timer = object: CountDownTimer(gameActivity.time.toLong(),10){
             override fun onFinish() {
@@ -39,23 +72,52 @@ class GameFragment : Fragment() {
         }.start()
 
 
-        moveButton(view)
-        pushMe.setOnClickListener({
+
+        pushMe1.setOnClickListener({
             timer.cancel()
-            gameActivity.displayResult(true)
+            if (switchColours != null){
+                switchColours!!.cancel()
+            }
+            onClick(pushMe1,gameActivity)
+        })
+
+        pushMe2.setOnClickListener({
+            timer.cancel()
+            if (switchColours != null){
+                switchColours!!.cancel()
+            }
+            onClick(pushMe2,gameActivity)
         })
 
         return view
     }
 
-    private fun moveButton(view: View){
+    private fun moveButton(view: View, button: Int){
         val random = Random()
         val constraintLayout = view.findViewById<View>(R.id.constraint_layout) as ConstraintLayout
         val constraintSet = ConstraintSet()
 
         constraintSet.clone(constraintLayout)
-        constraintSet.setVerticalBias(R.id.pushMe, random.nextFloat())
-        constraintSet.setHorizontalBias(R.id.pushMe, random.nextFloat())
+        constraintSet.setVerticalBias(button, random.nextFloat())
+        constraintSet.setHorizontalBias(button, random.nextFloat())
         constraintSet.applyTo(constraintLayout)
+    }
+
+    private fun switchColour(button: Button){
+        if (buttonMap.get(button) == R.color.green){
+            button.setBackgroundResource(R.color.red)
+            buttonMap.put(button,R.color.red)
+        } else {
+            button.setBackgroundResource(R.color.green)
+            buttonMap.put(button,R.color.green)
+        }
+    }
+
+    private fun onClick(button: Button, gameActivity: GameActivity){
+        if (buttonMap.get(button) == R.color.green || stage == 1){
+            gameActivity.displayResult(true)
+        } else {
+            gameActivity.displayResult(false)
+        }
     }
 }

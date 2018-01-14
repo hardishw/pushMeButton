@@ -4,12 +4,10 @@ import android.app.Fragment
 import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
-import android.view.TextureView
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
-import kotlinx.android.synthetic.main.result.*
 
 /**
  * Created by hardi on 14/01/2018.
@@ -29,6 +27,7 @@ class ResultFragment : Fragment() {
             btnNextLevel.setOnClickListener({
                 gameActivity.nextLevel()
             })
+            btnNextLevel.isEnabled = (gameActivity.currentLevel < gameActivity.MAX_LEVEL)
         } else {
             result.text = getString(R.string.loser)
             result.setTextColor(Color.RED)
