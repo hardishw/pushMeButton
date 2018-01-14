@@ -3,12 +3,12 @@ package com.hwgames.pushmebutton
 import android.graphics.Color
 import android.os.Bundle
 import android.os.CountDownTimer
-import android.os.PersistableBundle
+import android.os.Handler
 import android.support.constraint.ConstraintLayout
 import android.support.constraint.ConstraintSet
 import android.support.v7.app.AppCompatActivity
 import android.view.View
-import kotlinx.android.synthetic.main.activity_game.*
+import kotlinx.android.synthetic.main.game.*
 import kotlinx.android.synthetic.main.result.*
 import java.util.*
 
@@ -17,59 +17,76 @@ import java.util.*
  */
 class GameActivity : AppCompatActivity() {
 
+    var currentLevel = 0
+    var time = 0
+    var winner = false
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_game)
-
-        progressBar.progress = 0
-
-        val timer = object: CountDownTimer(10000,100){
-            var progress = 0
-            override fun onFinish() {
-                progressBar.progress = 100
-                Thread.sleep(100)
-                displayResult(false)
-            }
-
-            override fun onTick(p0: Long) {
-                progress += 1
-                progressBar.progress = progress
-            }
-
-        }.start()
-
-
-        moveButton()
-        pushMe.setOnClickListener({
-            timer.cancel()
-            displayResult(true)
-        })
+        nextLevel()
     }
 
-    private fun moveButton(){
-        val random = Random()
-        val constraintLayout = findViewById<View>(R.id.constraint_layout) as ConstraintLayout
-        val constraintSet = ConstraintSet()
+    internal fun nextLevel(){
+        currentLevel++
+        fragmentManager.beginTransaction().replace(R.id.frag,LevelFragment()).commit()
 
-        constraintSet.clone(constraintLayout)
-        constraintSet.setVerticalBias(R.id.pushMe, random.nextFloat())
-        constraintSet.setHorizontalBias(R.id.pushMe, random.nextFloat())
-        constraintSet.applyTo(constraintLayout)
+        val handler = Handler()
+
+        handler.postDelayed({
+
+            when(currentLevel){
+                1 -> {
+                    time = 10000
+                    game()
+                }
+                2 -> {
+                    time = 9000
+                    game()
+                }
+                3 -> {
+                    time = 8000
+                    game()
+                }
+                4 -> {
+                    time = 7000
+                    game()
+                }
+                5 -> {
+                    time = 6000
+                    game()
+                }
+                6 -> {
+                    time = 5000
+                    game()
+                }
+                7 -> {
+                    time = 4000
+                    game()
+                }
+                8 -> {
+                    time = 3000
+                    game()
+                }
+                9 -> {
+                    time = 2000
+                    game()
+                }
+                10 -> {
+                    time = 1000
+                    game()
+                }
+            }
+
+        },1500)
     }
 
-    private fun displayResult(winner:Boolean){
-        setContentView(R.layout.result)
-        if (winner){
-            result.text = "WINNER"
-            result.setTextColor(Color.GREEN)
-        } else {
-            result.text = "LOSER"
-            result.setTextColor(Color.RED)
-        }
+    internal fun displayResult(winner:Boolean){
+        this.winner = winner
+        fragmentManager.beginTransaction().replace(R.id.frag,ResultFragment()).commit()
+    }
 
-        backToMenu.text = "Back To Menu"
-        backToMenu.setOnClickListener({
-            finish()
-        })
+    private fun game(){
+        fragmentManager.beginTransaction().replace(R.id.frag,GameFragment()).commit()
     }
 }
