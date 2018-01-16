@@ -1,8 +1,8 @@
 package com.hwgames.pushmebutton
 
 
-import android.app.Activity
 import android.app.Fragment
+import android.content.Context
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.support.constraint.ConstraintLayout
@@ -104,7 +104,7 @@ class GameFragment : Fragment() {
     }
 
     private fun switchColour(button: Button){
-        if (buttonMap.get(button) == R.color.green){
+        if (buttonMap[button] == R.color.green){
             button.setBackgroundResource(R.color.red)
             buttonMap.put(button,R.color.red)
         } else {
@@ -114,8 +114,10 @@ class GameFragment : Fragment() {
     }
 
     private fun onClick(button: Button, gameActivity: GameActivity){
-        if (buttonMap.get(button) == R.color.green || stage == 1){
+        if (buttonMap[button] == R.color.green || stage == 1){
             gameActivity.displayResult(true)
+            val sharedPref = activity.getPreferences(Context.MODE_PRIVATE) ?: return
+            sharedPref.edit().putInt("level", (activity as GameActivity).currentLevel + 1).commit()
         } else {
             gameActivity.displayResult(false)
         }
