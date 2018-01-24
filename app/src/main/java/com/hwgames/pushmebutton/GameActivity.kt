@@ -21,7 +21,7 @@ class GameActivity : AppCompatActivity() {
         setContentView(R.layout.activity_game)
 
         val sharedPref = getPreferences(Context.MODE_PRIVATE) ?: return
-        currentLevel = sharedPref.getInt("level",1)
+        currentLevel = sharedPref.getInt("level",1) - 1
         if (currentLevel == 1) currentLevel = 0
         nextLevel()
     }
