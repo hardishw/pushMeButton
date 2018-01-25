@@ -86,7 +86,7 @@ class GameFragment : Fragment() {
                     }
                 }.start()
 
-                moveButtons = object: CountDownTimer(gameActivity.time.toLong(),1500){
+                moveButtons = object: CountDownTimer(gameActivity.time.toLong(),1200){
                     override fun onFinish() {
 
                     }
