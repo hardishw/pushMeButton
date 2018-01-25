@@ -4,6 +4,7 @@ import android.content.Context
 import android.os.Bundle
 import android.os.Handler
 import android.support.v7.app.AppCompatActivity
+import android.util.Log
 
 /**
  * Created by hardi on 14/01/2018.
@@ -12,7 +13,7 @@ class GameActivity : AppCompatActivity() {
 
     var currentLevel = 0
     var time = 0
-    val MAX_LEVEL = 20
+    val MAX_LEVEL = 30
     var winner = false
     var stage = 1
 
@@ -22,8 +23,12 @@ class GameActivity : AppCompatActivity() {
 
         val sharedPref = getPreferences(Context.MODE_PRIVATE) ?: return
         currentLevel = sharedPref.getInt("level",1) - 1
-        if (currentLevel == 1) currentLevel = 0
-        nextLevel()
+        Log.w("activity", "level " + currentLevel)
+        if (currentLevel + 1 >= MAX_LEVEL) {
+            displayResult(true)
+        } else {
+            nextLevel()
+        }
     }
 
     internal fun nextLevel() {
@@ -40,12 +45,18 @@ class GameActivity : AppCompatActivity() {
                 else -> 10000 - ((currentLevel % 10) * 1000)
             }
 
-            if (currentLevel < 11) {
-                game()
-            } else if (currentLevel < 21) {
-                stage = 2
-                game()
+            when {
+                currentLevel < 11 -> game()
+                currentLevel < 21 -> {
+                    stage = 2
+                    game()
+                }
+                currentLevel < 31 -> {
+                    stage = 3
+                    game()
+                }
             }
+
         }, 1500)
     }
 

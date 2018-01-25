@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.os.CountDownTimer
 import android.support.constraint.ConstraintLayout
 import android.support.constraint.ConstraintSet
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,6 +16,7 @@ import android.widget.ProgressBar
 import java.lang.Math.round
 import java.util.*
 import kotlin.collections.HashMap
+import android.util.TypedValue
 
 
 /**
@@ -23,44 +25,21 @@ import kotlin.collections.HashMap
 class GameFragment : Fragment() {
     val buttonMap = HashMap<Button,Int>()
     var stage = 0
+    var switchColours:CountDownTimer? = null
+    var timer:CountDownTimer? = null
+    var moveButtons:CountDownTimer? = null
+    var buttonId = 0
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View {
         val view = inflater!!.inflate(R.layout.game,container,false)
         val gameActivity = activity as GameActivity
         stage = gameActivity.stage
         val progressBar = view.findViewById<ProgressBar>(R.id.progressBar)
-        val pushMe1 = view.findViewById<Button>(R.id.pushMe1)
-        val pushMe2 = view.findViewById<Button>(R.id.pushMe2)
 
-        var switchColours:CountDownTimer? = null
+
 
         progressBar.progress = 0
-        buttonMap.put(pushMe1,R.color.green)
-        buttonMap.put(pushMe2,R.color.red)
-        pushMe1.setBackgroundResource(R.color.green)
-
-        if (stage != 2){
-            pushMe2.visibility = View.INVISIBLE
-        } else{
-            pushMe2.setBackgroundResource(R.color.red)
-            moveButton(view,pushMe2.id)
-            switchColours = object: CountDownTimer(gameActivity.time.toLong(),600){
-                override fun onFinish() {
-
-                }
-
-                override fun onTick(p0: Long) {
-                    for (button in buttonMap.keys){
-                        switchColour(button)
-                    }
-                }
-            }.start()
-        }
-        moveButton(view,pushMe1.id)
-
-
-
-        val timer = object: CountDownTimer(gameActivity.time.toLong(),10){
+        timer = object: CountDownTimer(gameActivity.time.toLong(),10){
             override fun onFinish() {
                 progressBar.progress = 100
                 gameActivity.displayResult(false)
@@ -71,23 +50,55 @@ class GameFragment : Fragment() {
             }
         }.start()
 
-
-
-        pushMe1.setOnClickListener({
-            timer.cancel()
-            if (switchColours != null){
-                switchColours!!.cancel()
+        when(stage){
+            1 ->{
+                createButton(view,gameActivity,R.color.green)
             }
-            onClick(pushMe1,gameActivity)
-        })
+            2 -> {
+                createButton(view,gameActivity,R.color.green)
+                createButton(view,gameActivity,R.color.red)
 
-        pushMe2.setOnClickListener({
-            timer.cancel()
-            if (switchColours != null){
-                switchColours!!.cancel()
+                switchColours = object: CountDownTimer(gameActivity.time.toLong(),600){
+                    override fun onFinish() {
+
+                    }
+
+                    override fun onTick(p0: Long) {
+                        for (button in buttonMap.keys){
+                            switchColour(button)
+                        }
+                    }
+                }.start()
             }
-            onClick(pushMe2,gameActivity)
-        })
+            3 -> {
+                createButton(view,gameActivity,R.color.green)
+                createButton(view,gameActivity,R.color.red)
+
+                switchColours = object: CountDownTimer(gameActivity.time.toLong(),600){
+                    override fun onFinish() {
+
+                    }
+
+                    override fun onTick(p0: Long) {
+                        for (button in buttonMap.keys){
+                            switchColour(button)
+                        }
+                    }
+                }.start()
+
+                moveButtons = object: CountDownTimer(gameActivity.time.toLong(),1500){
+                    override fun onFinish() {
+
+                    }
+
+                    override fun onTick(p0: Long) {
+                        for (button in buttonMap.keys){
+                            moveButton(view,button.id)
+                        }
+                    }
+                }.start()
+            }
+        }
 
         return view
     }
@@ -101,6 +112,44 @@ class GameFragment : Fragment() {
         constraintSet.setVerticalBias(button, random.nextFloat())
         constraintSet.setHorizontalBias(button, random.nextFloat())
         constraintSet.applyTo(constraintLayout)
+    }
+
+    private fun createButton(view: View, activity: GameActivity, colour: Int):Button {
+        val random = Random()
+        val layout = view.findViewById<ConstraintLayout>(R.id.constraint_layout)
+        val button = Button(activity)
+        button.id = buttonId++
+        Log.w("gamefragment","button "+button.id)
+        button.setOnClickListener({
+            if (timer != null){
+                timer!!.cancel()
+            }
+            if (switchColours != null){
+                switchColours!!.cancel()
+            }
+            onClick(button,activity)
+        })
+        layout.addView(button)
+        button.setBackgroundResource(colour)
+        val constraintSet = ConstraintSet()
+        val size = TypedValue.applyDimension(
+                TypedValue.COMPLEX_UNIT_DIP, 30f, resources
+                .displayMetrics).toInt()
+        constraintSet.clone(layout)
+        constraintSet.connect(button.id, ConstraintSet.BOTTOM, ConstraintSet.PARENT_ID, ConstraintSet.BOTTOM)
+        constraintSet.connect(button.id,ConstraintSet.START,ConstraintSet.PARENT_ID,ConstraintSet.START)
+        constraintSet.connect(button.id,ConstraintSet.TOP,ConstraintSet.PARENT_ID,ConstraintSet.TOP)
+        constraintSet.connect(button.id,ConstraintSet.END,ConstraintSet.PARENT_ID,ConstraintSet.END)
+        constraintSet.constrainHeight(button.id,size)
+        constraintSet.constrainWidth(button.id,size)
+        constraintSet.setVerticalBias(button.id, random.nextFloat())
+        constraintSet.setHorizontalBias(button.id, random.nextFloat())
+        constraintSet.applyTo(layout)
+
+
+        buttonMap.put(button,colour)
+
+        return button
     }
 
     private fun switchColour(button: Button){
