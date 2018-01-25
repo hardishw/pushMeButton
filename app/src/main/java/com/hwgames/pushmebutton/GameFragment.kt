@@ -30,6 +30,7 @@ class GameFragment : Fragment() {
     var moveButtons:CountDownTimer? = null
     var buttonId = 0
 
+
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View {
         val view = inflater!!.inflate(R.layout.game,container,false)
         val gameActivity = activity as GameActivity
@@ -98,6 +99,15 @@ class GameFragment : Fragment() {
                     }
                 }.start()
             }
+            4 -> {
+
+                createButton(view,gameActivity,R.color.green)
+                createButton(view,gameActivity,R.color.red)
+                createButton(view,gameActivity,R.color.purple)
+                createButton(view,gameActivity,R.color.orange)
+                createButton(view,gameActivity,R.color.blue)
+                createButton(view,gameActivity,R.color.yellow)
+            }
         }
 
         return view
@@ -163,7 +173,9 @@ class GameFragment : Fragment() {
     }
 
     private fun onClick(button: Button, gameActivity: GameActivity){
-        if (buttonMap[button] == R.color.green || stage == 1){
+        var colour = gameActivity.colour
+        if (colour == null) colour = R.color.green
+        if (buttonMap[button] == colour || stage == 1){
             gameActivity.displayResult(true)
             val sharedPref = activity.getPreferences(Context.MODE_PRIVATE) ?: return
             sharedPref.edit().putInt("level", (activity as GameActivity).currentLevel + 1).commit()

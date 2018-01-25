@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.os.Handler
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
+import java.util.*
 
 /**
  * Created by hardi on 14/01/2018.
@@ -13,9 +14,12 @@ class GameActivity : AppCompatActivity() {
 
     var currentLevel = 0
     var time = 0
-    val MAX_LEVEL = 30
+    val maxLevel = 40
     var winner = false
     var stage = 1
+    private val colours = intArrayOf(R.color.red,R.color.green,R.color.orange,R.color.blue,R.color.yellow,R.color.purple)
+    var colour:Int? = null
+    private val random = Random()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -24,7 +28,7 @@ class GameActivity : AppCompatActivity() {
         val sharedPref = getPreferences(Context.MODE_PRIVATE) ?: return
         currentLevel = sharedPref.getInt("level",1) - 1
         Log.w("activity", "level " + currentLevel)
-        if (currentLevel + 1 >= MAX_LEVEL) {
+        if (currentLevel + 1 >= maxLevel) {
             displayResult(true)
         } else {
             nextLevel()
@@ -54,6 +58,16 @@ class GameActivity : AppCompatActivity() {
                 currentLevel < 31 -> {
                     stage = 3
                     game()
+                }
+                currentLevel < 41 -> {
+                    time /= 2
+                    Log.w("gameactivity",time.toString())
+                    colour = colours[random.nextInt(colours.size)]
+                    fragmentManager.beginTransaction().replace(R.id.frag, FlashFragment()).commit()
+                    stage = 4
+                    handler.postDelayed({
+                        game()
+                    },100)
                 }
             }
 

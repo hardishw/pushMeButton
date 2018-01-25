@@ -27,7 +27,7 @@ class ResultFragment : Fragment() {
             btnNextLevel.setOnClickListener({
                 gameActivity.nextLevel()
             })
-            btnNextLevel.isEnabled = (gameActivity.currentLevel < gameActivity.MAX_LEVEL)
+            btnNextLevel.isEnabled = (gameActivity.currentLevel < gameActivity.maxLevel)
         } else {
             result.text = getString(R.string.loser)
             result.setTextColor(Color.RED)
