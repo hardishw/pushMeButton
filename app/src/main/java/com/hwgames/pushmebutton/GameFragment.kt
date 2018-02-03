@@ -143,7 +143,7 @@ class GameFragment : Fragment() {
         button.setBackgroundResource(colour)
         val constraintSet = ConstraintSet()
         val size = TypedValue.applyDimension(
-                TypedValue.COMPLEX_UNIT_DIP, 30f, resources
+                TypedValue.COMPLEX_UNIT_DIP, 40f, resources
                 .displayMetrics).toInt()
         constraintSet.clone(layout)
         constraintSet.connect(button.id, ConstraintSet.BOTTOM, ConstraintSet.PARENT_ID, ConstraintSet.BOTTOM)
