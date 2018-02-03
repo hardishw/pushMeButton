@@ -61,6 +61,7 @@ class GameActivity : AppCompatActivity() {
                 }
                 currentLevel < 41 -> {
                     time /= 2
+                    time +=100
                     Log.w("gameactivity",time.toString())
                     colour = colours[random.nextInt(colours.size)]
                     fragmentManager.beginTransaction().replace(R.id.frag, FlashFragment()).commit()
@@ -81,5 +82,10 @@ class GameActivity : AppCompatActivity() {
 
     private fun game() {
         if (!isFinishing) fragmentManager.beginTransaction().replace(R.id.frag, GameFragment()).commit()
+    }
+
+    public fun retry() {
+        currentLevel -= 1
+        nextLevel()
     }
 }

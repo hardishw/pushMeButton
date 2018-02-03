@@ -18,6 +18,7 @@ class ResultFragment : Fragment() {
         val gameActivity = activity as GameActivity
         val result = view.findViewById<TextView>(R.id.result)
         val btnNextLevel = view.findViewById<Button>(R.id.btnNextLevel)
+        val btnRetry = view.findViewById<Button>(R.id.btnRetry)
         val backToMenu = view.findViewById<Button>(R.id.backToMenu)
 
         if (gameActivity.winner){
@@ -38,6 +39,12 @@ class ResultFragment : Fragment() {
         backToMenu.setOnClickListener({
             gameActivity.finish()
         })
+
+        btnRetry.text = getString(R.string.retry)
+        btnRetry.setOnClickListener({
+            gameActivity.retry()
+        })
+
         return view
     }
 }

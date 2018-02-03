@@ -6,4 +6,5 @@
     <string name="next_level">Next Level</string>
     <string name="level">"Level "</string>
     <string name="start_game">Start Game</string>
+    <string name="retry">Retry</string>
 </resources>
