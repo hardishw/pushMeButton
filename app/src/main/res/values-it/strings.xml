@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">Push Me Button</string>
+    <string name="winner">VINCITORE</string>
+    <string name="loser">PERDENTE</string>
+    <string name="menu">Menu</string>
+    <string name="next_level">Livello successivo</string>
+    <string name="level">"Livello "</string>
+    <string name="start_game">Inizia il gioco</string>
+    <string name="retry">Riprova</string>
+</resources>
