@@ -7,4 +7,6 @@
     <string name="level">"Niveau "</string>
     <string name="start_game">Démarrer Jeu</string>
     <string name="retry">Recommencez</string>
+    <string name="reset">Réinitialiser</string>
+    <string name="score">But:</string>
 </resources>

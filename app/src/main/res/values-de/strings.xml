@@ -7,4 +7,6 @@
     <string name="level">"Stufe "</string>
     <string name="start_game">Spiel beginnen</string>
     <string name="retry">Wiederholen</string>
+    <string name="reset">Zurücksetzen</string>
+    <string name="score">Ergebnis:</string>
 </resources>

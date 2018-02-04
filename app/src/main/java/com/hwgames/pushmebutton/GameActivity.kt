@@ -28,7 +28,7 @@ class GameActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_game)
 
-        val sharedPref = getSharedPreferences("level",0)
+        val sharedPref = getSharedPreferences("game",0)
         currentLevel = sharedPref.getInt("level",1) - 1
         Log.w("activity", "level " + currentLevel)
         if (currentLevel + 1 >= maxLevel) {

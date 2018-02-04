@@ -8,4 +8,5 @@
     <string name="start_game">Start Game</string>
     <string name="retry">Retry</string>
     <string name="reset">Reset</string>
+    <string name="score">"Score: "</string>
 </resources>

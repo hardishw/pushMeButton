@@ -1,13 +1,13 @@
 package com.hwgames.pushmebutton
 
 
+import android.annotation.SuppressLint
 import android.app.Fragment
-import android.content.Context
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.support.constraint.ConstraintLayout
 import android.support.constraint.ConstraintSet
-import android.util.Log
+import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -16,7 +16,6 @@ import android.widget.ProgressBar
 import java.lang.Math.round
 import java.util.*
 import kotlin.collections.HashMap
-import android.util.TypedValue
 
 
 /**
@@ -29,11 +28,12 @@ class GameFragment : Fragment() {
     var timer:CountDownTimer? = null
     var moveButtons:CountDownTimer? = null
     var buttonId = 0
-
+    var progress = 0
+    lateinit var gameActivity:GameActivity
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View {
         val view = inflater!!.inflate(R.layout.game,container,false)
-        val gameActivity = activity as GameActivity
+        gameActivity = activity as GameActivity
         stage = gameActivity.stage
         val progressBar = view.findViewById<ProgressBar>(R.id.progressBar)
 
@@ -47,7 +47,8 @@ class GameFragment : Fragment() {
             }
 
             override fun onTick(p0: Long) {
-                progressBar.progress = (round(100.0 - ((p0.toDouble()/gameActivity.time.toDouble())*100))).toInt()
+                progress = (round(100.0 - ((p0.toDouble()/gameActivity.time.toDouble())*100))).toInt()
+                progressBar.progress = progress
             }
         }.start()
 
@@ -129,7 +130,6 @@ class GameFragment : Fragment() {
         val layout = view.findViewById<ConstraintLayout>(R.id.constraint_layout)
         val button = Button(activity)
         button.id = buttonId++
-        Log.w("gamefragment","button "+button.id)
         button.setOnClickListener({
             if (timer != null){
                 timer!!.cancel()
@@ -157,7 +157,7 @@ class GameFragment : Fragment() {
         constraintSet.applyTo(layout)
 
 
-        buttonMap.put(button,colour)
+        buttonMap[button] = colour
 
         return button
     }
@@ -165,20 +165,23 @@ class GameFragment : Fragment() {
     private fun switchColour(button: Button){
         if (buttonMap[button] == R.color.green){
             button.setBackgroundResource(R.color.red)
-            buttonMap.put(button,R.color.red)
+            buttonMap[button] = R.color.red
         } else {
             button.setBackgroundResource(R.color.green)
-            buttonMap.put(button,R.color.green)
+            buttonMap[button] = R.color.green
         }
     }
 
+    @SuppressLint("ApplySharedPref")
     private fun onClick(button: Button, gameActivity: GameActivity){
         var colour = gameActivity.colour
         if (colour == null) colour = R.color.green
         if (buttonMap[button] == colour || stage == 1){
             gameActivity.displayResult(true)
-            val sharedPref = activity.getSharedPreferences("level",0)
+            val sharedPref = activity.getSharedPreferences("game",0)
+            val currentScore = sharedPref.getInt("score",0)
             sharedPref.edit().putInt("level", (activity as GameActivity).currentLevel + 1).commit()
+            sharedPref.edit().putInt("score", currentScore + ((100 - progress) * gameActivity.currentLevel)).commit()
         } else {
             gameActivity.displayResult(false)
         }
