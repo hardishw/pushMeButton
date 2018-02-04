@@ -30,44 +30,94 @@ class ResultFragment : Fragment() {
         btnNextLevel.text = getString(R.string.next_level)
         btnNextLevel.isEnabled = false
 
-        MobileAds.initialize(gameActivity,"ca-app-pub-7101862270937969~3612522125")
-        val mInterstitial = InterstitialAd(gameActivity)
-        mInterstitial.adUnitId = "ca-app-pub-3940256099942544/1033173712"
-        mInterstitial.loadAd(AdRequest.Builder().build())
-        mInterstitial.adListener = object : AdListener(){
-            override fun onAdLoaded() {
-                mInterstitial.show()
-                backToMenu.isEnabled = true
-                btnRetry.isEnabled = true
+        if (gameActivity.currentLevel % 5 == 0){
+            MobileAds.initialize(gameActivity,"ca-app-pub-7101862270937969~3612522125")
+            val mInterstitial = InterstitialAd(gameActivity)
+            mInterstitial.adUnitId = "ca-app-pub-7101862270937969/6771724858"
+            mInterstitial.loadAd(AdRequest.Builder().build())
+            mInterstitial.adListener = object : AdListener(){
+                override fun onAdLoaded() {
+                    mInterstitial.show()
+                    backToMenu.isEnabled = true
+                    btnRetry.isEnabled = true
 
-                if (gameActivity.winner){
-                    result.text = getString(R.string.winner)
-                    result.setTextColor(Color.GREEN)
-                    btnNextLevel.setOnClickListener({
-                        gameActivity.nextLevel()
+                    if (gameActivity.winner){
+                        result.text = getString(R.string.winner)
+                        result.setTextColor(Color.GREEN)
+                        btnNextLevel.setOnClickListener({
+                            gameActivity.nextLevel()
+                        })
+                        btnNextLevel.isEnabled = (gameActivity.currentLevel < gameActivity.maxLevel)
+                    } else {
+                        result.text = getString(R.string.loser)
+                        result.setTextColor(Color.RED)
+                        btnNextLevel.visibility = View.INVISIBLE
+                    }
+
+                    backToMenu.setOnClickListener({
+                        gameActivity.finish()
                     })
-                    btnNextLevel.isEnabled = (gameActivity.currentLevel < gameActivity.maxLevel)
-                } else {
-                    result.text = getString(R.string.loser)
-                    result.setTextColor(Color.RED)
-                    btnNextLevel.visibility = View.INVISIBLE
+
+
+                    btnRetry.setOnClickListener({
+                        gameActivity.retry()
+                    })
                 }
 
-                backToMenu.setOnClickListener({
-                    gameActivity.finish()
-                })
+                override fun onAdFailedToLoad(p0: Int) {
+                    mInterstitial.show()
+                    backToMenu.isEnabled = true
+                    btnRetry.isEnabled = true
+
+                    if (gameActivity.winner){
+                        result.text = getString(R.string.winner)
+                        result.setTextColor(Color.GREEN)
+                        btnNextLevel.setOnClickListener({
+                            gameActivity.nextLevel()
+                        })
+                        btnNextLevel.isEnabled = (gameActivity.currentLevel < gameActivity.maxLevel)
+                    } else {
+                        result.text = getString(R.string.loser)
+                        result.setTextColor(Color.RED)
+                        btnNextLevel.visibility = View.INVISIBLE
+                    }
+
+                    backToMenu.setOnClickListener({
+                        gameActivity.finish()
+                    })
 
 
-                btnRetry.setOnClickListener({
-                    gameActivity.retry()
-                })
+                    btnRetry.setOnClickListener({
+                        gameActivity.retry()
+                    })
+                }
             }
+        } else {
+            backToMenu.isEnabled = true
+            btnRetry.isEnabled = true
+
+            if (gameActivity.winner){
+                result.text = getString(R.string.winner)
+                result.setTextColor(Color.GREEN)
+                btnNextLevel.setOnClickListener({
+                    gameActivity.nextLevel()
+                })
+                btnNextLevel.isEnabled = (gameActivity.currentLevel < gameActivity.maxLevel)
+            } else {
+                result.text = getString(R.string.loser)
+                result.setTextColor(Color.RED)
+                btnNextLevel.visibility = View.INVISIBLE
+            }
+
+            backToMenu.setOnClickListener({
+                gameActivity.finish()
+            })
+
+
+            btnRetry.setOnClickListener({
+                gameActivity.retry()
+            })
         }
-
-
-
-
-
 
         return view
     }

@@ -20,15 +20,6 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         sharedPref = getSharedPreferences("game", 0)
-        MobileAds.initialize(this,"ca-app-pub-7101862270937969~3612522125")
-        val mInterstitial = InterstitialAd(this)
-        mInterstitial.adUnitId = "ca-app-pub-3940256099942544/1033173712"
-        mInterstitial.loadAd(AdRequest.Builder().build())
-        mInterstitial.adListener = object : AdListener(){
-            override fun onAdLoaded() {
-                mInterstitial.show()
-            }
-        }
         createMenu()
         updateScore()
 
