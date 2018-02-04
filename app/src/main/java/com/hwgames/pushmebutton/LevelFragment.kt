@@ -12,13 +12,15 @@ import android.widget.TextView
  */
 class LevelFragment : Fragment(){
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View {
-
-        var view = inflater!!.inflate(R.layout.level_display,container,false)
-
+        val view = inflater!!.inflate(R.layout.level_display,container,false)
         val gameActivity = activity as GameActivity
 
         val txtLevel = view.findViewById<TextView>(R.id.txtLevel) as TextView
         txtLevel.text = getString(R.string.level) + gameActivity.currentLevel
+
+        val txtStage= view.findViewById<TextView>(R.id.txtStage) as TextView
+        txtStage.text = getString(R.string.stage) + gameActivity.stage
+
         return view
     }
 }

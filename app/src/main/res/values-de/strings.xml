@@ -9,4 +9,5 @@
     <string name="retry">Wiederholen</string>
     <string name="reset">Zurücksetzen</string>
     <string name="score">Ergebnis:</string>
+    <string name="stage">Phase</string>
 </resources>

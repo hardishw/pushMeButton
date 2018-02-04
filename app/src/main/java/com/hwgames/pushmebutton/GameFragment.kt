@@ -181,6 +181,7 @@ class GameFragment : Fragment() {
             val sharedPref = activity.getSharedPreferences("game",0)
             val currentScore = sharedPref.getInt("score",0)
             sharedPref.edit().putInt("level", (activity as GameActivity).currentLevel + 1).commit()
+            sharedPref.edit().putInt("stage", stage).commit()
             sharedPref.edit().putInt("score", currentScore + ((100 - progress) * gameActivity.currentLevel)).commit()
         } else {
             gameActivity.displayResult(false)

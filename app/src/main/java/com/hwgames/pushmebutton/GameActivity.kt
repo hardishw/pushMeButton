@@ -30,6 +30,7 @@ class GameActivity : AppCompatActivity() {
 
         val sharedPref = getSharedPreferences("game",0)
         currentLevel = sharedPref.getInt("level",1) - 1
+        stage = sharedPref.getInt("stage",1)
         Log.w("activity", "level " + currentLevel)
         if (currentLevel + 1 >= maxLevel) {
             displayResult(true)
@@ -80,15 +81,14 @@ class GameActivity : AppCompatActivity() {
 
     internal fun displayResult(winner: Boolean) {
         this.winner = winner
-        val result = ResultFragment()
-        if (!isFinishing) fragmentManager.beginTransaction().replace(R.id.frag, result).commit()
+        if (!isFinishing) fragmentManager.beginTransaction().replace(R.id.frag, ResultFragment()).commit()
     }
 
     private fun game() {
         if (!isFinishing) fragmentManager.beginTransaction().replace(R.id.frag, GameFragment()).commit()
     }
 
-    public fun retry() {
+    fun retry() {
         currentLevel -= 1
         nextLevel()
     }
