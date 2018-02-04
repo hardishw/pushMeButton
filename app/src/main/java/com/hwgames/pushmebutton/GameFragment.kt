@@ -177,7 +177,7 @@ class GameFragment : Fragment() {
         if (colour == null) colour = R.color.green
         if (buttonMap[button] == colour || stage == 1){
             gameActivity.displayResult(true)
-            val sharedPref = activity.getPreferences(Context.MODE_PRIVATE) ?: return
+            val sharedPref = activity.getSharedPreferences("level",0)
             sharedPref.edit().putInt("level", (activity as GameActivity).currentLevel + 1).commit()
         } else {
             gameActivity.displayResult(false)

@@ -5,6 +5,9 @@ import android.os.Bundle
 import android.os.Handler
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
+import com.google.android.gms.ads.AdRequest
+import com.google.android.gms.ads.MobileAds
+import kotlinx.android.synthetic.main.result.*
 import java.util.*
 
 /**
@@ -25,7 +28,7 @@ class GameActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_game)
 
-        val sharedPref = getPreferences(Context.MODE_PRIVATE) ?: return
+        val sharedPref = getSharedPreferences("level",0)
         currentLevel = sharedPref.getInt("level",1) - 1
         Log.w("activity", "level " + currentLevel)
         if (currentLevel + 1 >= maxLevel) {
@@ -77,7 +80,8 @@ class GameActivity : AppCompatActivity() {
 
     internal fun displayResult(winner: Boolean) {
         this.winner = winner
-        if (!isFinishing) fragmentManager.beginTransaction().replace(R.id.frag, ResultFragment()).commit()
+        val result = ResultFragment()
+        if (!isFinishing) fragmentManager.beginTransaction().replace(R.id.frag, result).commit()
     }
 
     private fun game() {
