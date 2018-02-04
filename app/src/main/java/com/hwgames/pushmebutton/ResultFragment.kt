@@ -30,7 +30,7 @@ class ResultFragment : Fragment() {
         btnNextLevel.text = getString(R.string.next_level)
         btnNextLevel.isEnabled = false
 
-        MobileAds.initialize(gameActivity,"ca-app-pub-3940256099942544~3347511713")
+        MobileAds.initialize(gameActivity,"ca-app-pub-7101862270937969~3612522125")
         val mInterstitial = InterstitialAd(gameActivity)
         mInterstitial.adUnitId = "ca-app-pub-3940256099942544/1033173712"
         mInterstitial.loadAd(AdRequest.Builder().build())

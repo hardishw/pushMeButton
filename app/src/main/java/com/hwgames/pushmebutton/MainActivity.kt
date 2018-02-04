@@ -20,7 +20,7 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         sharedPref = getSharedPreferences("game", 0)
-        MobileAds.initialize(this,"ca-app-pub-3940256099942544~3347511713")
+        MobileAds.initialize(this,"ca-app-pub-7101862270937969~3612522125")
         val mInterstitial = InterstitialAd(this)
         mInterstitial.adUnitId = "ca-app-pub-3940256099942544/1033173712"
         mInterstitial.loadAd(AdRequest.Builder().build())
@@ -34,6 +34,7 @@ class MainActivity : AppCompatActivity() {
 
         reset.setOnClickListener {
             sharedPref.edit().putInt("level", 1).commit()
+            sharedPref.edit().putInt("stage", 1).commit()
             sharedPref.edit().putInt("score", 0).commit()
             updateScore()
         }

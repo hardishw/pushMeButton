@@ -41,11 +41,11 @@ class GameActivity : AppCompatActivity() {
 
     internal fun nextLevel() {
         currentLevel++
-        if (!isFinishing) fragmentManager.beginTransaction().replace(R.id.frag, LevelFragment()).commit()
 
-        val handler = Handler()
 
-        handler.postDelayed({
+
+
+
 
             time = when {
                 currentLevel % 10 == 1 -> 10000
@@ -54,29 +54,35 @@ class GameActivity : AppCompatActivity() {
             }
 
             when {
-                currentLevel < 11 -> game()
+                currentLevel < 11 -> {
+                    showLevel()
+                    game(1500)
+                }
                 currentLevel < 21 -> {
                     stage = 2
-                    game()
+                    showLevel()
+                    game(1500)
                 }
                 currentLevel < 31 -> {
                     stage = 3
-                    game()
+                    showLevel()
+                    game(1500)
                 }
                 currentLevel < 41 -> {
+                    stage = 4
+                    val handler = Handler()
+                    showLevel()
                     time /= 2
                     time +=100
-                    Log.w("gameactivity",time.toString())
                     colour = colours[random.nextInt(colours.size)]
-                    fragmentManager.beginTransaction().replace(R.id.frag, FlashFragment()).commit()
-                    stage = 4
                     handler.postDelayed({
-                        game()
-                    },100)
+                        fragmentManager.beginTransaction().replace(R.id.frag, FlashFragment()).commit()
+                    },1500)
+                    game(1600)
                 }
             }
 
-        }, 1500)
+
     }
 
     internal fun displayResult(winner: Boolean) {
@@ -84,8 +90,15 @@ class GameActivity : AppCompatActivity() {
         if (!isFinishing) fragmentManager.beginTransaction().replace(R.id.frag, ResultFragment()).commit()
     }
 
-    private fun game() {
+    private fun game(delay:Long) {
+        val handler = Handler()
+        handler.postDelayed({
         if (!isFinishing) fragmentManager.beginTransaction().replace(R.id.frag, GameFragment()).commit()
+        }, delay)
+    }
+
+    private fun showLevel(){
+        if (!isFinishing) fragmentManager.beginTransaction().replace(R.id.frag, LevelFragment()).commit()
     }
 
     fun retry() {
