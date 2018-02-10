@@ -10,4 +10,9 @@
     <string name="reset">Reiniciar</string>
     <string name="score">Puntos:</string>
     <string name="stage">Etapa</string>
+    <string name="hint_stage_1">El verde es nuestro amigo</string>
+    <string name="hint_stage_2">está cambiando</string>
+    <string name="hint_stage_3">¿Eso solo se movió?</string>
+    <string name="hint_stage_4">brilló delante de mis ojos</string>
+    <string name="hint_stage_5">está cambiando pt2</string>
 </resources>

@@ -21,6 +21,10 @@ class LevelFragment : Fragment(){
         val txtStage= view.findViewById<TextView>(R.id.txtStage) as TextView
         txtStage.text = getString(R.string.stage) + gameActivity.stage
 
+        val txtHint= view.findViewById<TextView>(R.id.hint) as TextView
+        txtHint.text = gameActivity.hint
+
+
         return view
     }
 }

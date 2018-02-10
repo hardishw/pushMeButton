@@ -5,7 +5,9 @@ import android.os.Bundle
 import android.os.Handler
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
+import com.google.android.gms.ads.AdListener
 import com.google.android.gms.ads.AdRequest
+import com.google.android.gms.ads.InterstitialAd
 import com.google.android.gms.ads.MobileAds
 import kotlinx.android.synthetic.main.result.*
 import java.util.*
@@ -17,16 +19,26 @@ class GameActivity : AppCompatActivity() {
 
     var currentLevel = 0
     var time = 0
-    val maxLevel = 40
+    val maxLevel = 50
     var winner = false
     var stage = 1
     private val colours = intArrayOf(R.color.red,R.color.green,R.color.orange,R.color.blue,R.color.yellow,R.color.purple)
     var colour:Int? = null
     private val random = Random()
+    val mInterstitial = InterstitialAd(this)
+    var failedAd = false
+    var hint = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_game)
+        MobileAds.initialize(this,"ca-app-pub-7101862270937969~3612522125")
+        mInterstitial.adUnitId = "ca-app-pub-7101862270937969/6771724858"
+        mInterstitial.adListener = object : AdListener (){
+            override fun onAdFailedToLoad(p0: Int) {
+                failedAd = true
+            }
+        }
 
         val sharedPref = getSharedPreferences("game",0)
         currentLevel = sharedPref.getInt("level",1) - 1
@@ -41,11 +53,7 @@ class GameActivity : AppCompatActivity() {
 
     internal fun nextLevel() {
         currentLevel++
-
-
-
-
-
+        mInterstitial.loadAd(AdRequest.Builder().build())
 
             time = when {
                 currentLevel % 10 == 1 -> 10000
@@ -55,24 +63,40 @@ class GameActivity : AppCompatActivity() {
 
             when {
                 currentLevel < 11 -> {
+                    hint = getString(R.string.hint_stage_1)
                     showLevel()
                     game(1500)
                 }
                 currentLevel < 21 -> {
+                    hint = getString(R.string.hint_stage_2)
                     stage = 2
                     showLevel()
                     game(1500)
                 }
                 currentLevel < 31 -> {
+                    hint = getString(R.string.hint_stage_3)
                     stage = 3
                     showLevel()
                     game(1500)
                 }
                 currentLevel < 41 -> {
+                    hint = getString(R.string.hint_stage_4)
                     stage = 4
                     val handler = Handler()
                     showLevel()
                     time /= 2
+                    time +=100
+                    colour = colours[random.nextInt(colours.size)]
+                    handler.postDelayed({
+                        fragmentManager.beginTransaction().replace(R.id.frag, FlashFragment()).commit()
+                    },1500)
+                    game(1600)
+                }
+                currentLevel < 51 -> {
+                    hint = getString(R.string.hint_stage_5)
+                    stage = 5
+                    val handler = Handler()
+                    showLevel()
                     time +=100
                     colour = colours[random.nextInt(colours.size)]
                     handler.postDelayed({

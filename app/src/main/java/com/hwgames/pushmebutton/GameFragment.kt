@@ -15,7 +15,9 @@ import android.widget.Button
 import android.widget.ProgressBar
 import java.lang.Math.round
 import java.util.*
+import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
+import kotlin.collections.HashSet
 
 
 /**
@@ -101,13 +103,49 @@ class GameFragment : Fragment() {
                 }.start()
             }
             4 -> {
-
                 createButton(view,gameActivity,R.color.green)
                 createButton(view,gameActivity,R.color.red)
                 createButton(view,gameActivity,R.color.purple)
                 createButton(view,gameActivity,R.color.orange)
                 createButton(view,gameActivity,R.color.blue)
                 createButton(view,gameActivity,R.color.yellow)
+            }
+            5 -> {
+                createButton(view,gameActivity,R.color.green)
+                createButton(view,gameActivity,R.color.red)
+                createButton(view,gameActivity,R.color.purple)
+                createButton(view,gameActivity,R.color.orange)
+                createButton(view,gameActivity,R.color.blue)
+                createButton(view,gameActivity,R.color.yellow)
+
+//                moveButtons = object: CountDownTimer(gameActivity.time.toLong(),1200){
+//                    override fun onFinish() {
+//
+//                    }
+//
+//                    override fun onTick(p0: Long) {
+//                        for (button in buttonMap.keys){
+//                            moveButton(view,button.id)
+//                        }
+//                    }
+//                }.start()
+
+                switchColours = object: CountDownTimer(gameActivity.time.toLong(),600){
+                    val random = Random()
+
+                    override fun onFinish() {
+
+                    }
+
+                    override fun onTick(p0: Long) {
+                        val colours = ArrayList<Int>(listOf(R.color.red,R.color.green,R.color.orange,R.color.blue,R.color.yellow,R.color.purple))
+                        for (button in buttonMap.keys){
+                            val colour = random.nextInt(colours.size)
+                            button.setBackgroundResource(colours[colour])
+                            colours.removeAt(colour)
+                        }
+                    }
+                }.start()
             }
         }
 

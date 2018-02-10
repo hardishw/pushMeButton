@@ -6,10 +6,7 @@ import android.content.SharedPreferences
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.widget.TextView
-import com.google.android.gms.ads.AdListener
-import com.google.android.gms.ads.AdRequest
-import com.google.android.gms.ads.InterstitialAd
-import com.google.android.gms.ads.MobileAds
+import com.google.android.gms.ads.*
 import kotlinx.android.synthetic.main.activity_main.*
 
 
@@ -19,6 +16,8 @@ class MainActivity : AppCompatActivity() {
     @SuppressLint("ApplySharedPref")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        MobileAds.initialize(this,"ca-app-pub-7101862270937969~3612522125")
+
         sharedPref = getSharedPreferences("game", 0)
         createMenu()
         updateScore()
@@ -29,6 +28,7 @@ class MainActivity : AppCompatActivity() {
             sharedPref.edit().putInt("score", 0).commit()
             updateScore()
         }
+        findViewById<AdView>(R.id.adView).loadAd(AdRequest.Builder().build())
     }
 
     override fun onActivityReenter(resultCode: Int, data: Intent?) {

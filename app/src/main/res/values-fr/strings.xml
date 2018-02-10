@@ -10,4 +10,9 @@
     <string name="reset">Réinitialiser</string>
     <string name="score">But:</string>
     <string name="stage">Étape</string>
+    <string name="hint_stage_1">Le vert est notre ami</string>
+    <string name="hint_stage_2">ça change</string>
+    <string name="hint_stage_3">Est-ce que ça a juste bougé?</string>
+    <string name="hint_stage_4">il a clignoté en face de mes yeux</string>
+    <string name="hint_stage_5">ça change pt2</string>
 </resources>

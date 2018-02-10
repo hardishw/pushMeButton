@@ -10,4 +10,9 @@
     <string name="reset">Reset</string>
     <string name="score">"Score: "</string>
     <string name="stage">"Stage "</string>
+    <string name="hint_stage_1">Green is our friend</string>
+    <string name="hint_stage_2">Switch it up</string>
+    <string name="hint_stage_3">Did that just move?</string>
+    <string name="hint_stage_4">it flashed infront of my eyes</string>
+    <string name="hint_stage_5">Switch it up pt2</string>
 </resources>

@@ -10,4 +10,9 @@
     <string name="reset">Reset</string>
     <string name="score">Punto:</string>
     <string name="stage">Fase</string>
+    <string name="hint_stage_1">Il verde è nostro amico</string>
+    <string name="hint_stage_2">sta cambiando</string>
+    <string name="hint_stage_3">Si è appena mosso?</string>
+    <string name="hint_stage_4">mi balenò davanti ai miei occhi</string>
+    <string name="hint_stage_5">sta cambiando pt2</string>
 </resources>

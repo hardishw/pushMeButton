@@ -10,4 +10,9 @@
     <string name="reset">Zurücksetzen</string>
     <string name="score">Ergebnis:</string>
     <string name="stage">Phase</string>
+    <string name="hint_stage_1">Grün ist unser Freund</string>
+    <string name="hint_stage_2">Es ändert sich</string>
+    <string name="hint_stage_3">Hat sich das nur bewegt?</string>
+    <string name="hint_stage_4">es blitzte vor meinen Augen auf</string>
+    <string name="hint_stage_5">Es ändert sich pt2</string>
 </resources>
