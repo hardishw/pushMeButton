@@ -15,4 +15,5 @@
     <string name="hint_stage_3">Hat sich das nur bewegt?</string>
     <string name="hint_stage_4">es blitzte vor meinen Augen auf</string>
     <string name="hint_stage_5">Es ändert sich pt2</string>
+    <string name="push_me">Schieb mich!</string>
 </resources>

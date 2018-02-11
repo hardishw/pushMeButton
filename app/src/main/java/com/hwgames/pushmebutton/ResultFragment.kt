@@ -25,9 +25,9 @@ class ResultFragment : Fragment() {
         val btnNextLevel = view.findViewById<Button>(R.id.btnNextLevel)
         val btnRetry = view.findViewById<Button>(R.id.btnRetry)
         val backToMenu = view.findViewById<Button>(R.id.backToMenu)
-        backToMenu.text = getString(R.string.menu)
-        btnRetry.text = getString(R.string.retry)
-        btnNextLevel.text = getString(R.string.next_level)
+        val score = view.findViewById<TextView>(R.id.score)
+        val sharedPref = gameActivity.getSharedPreferences("game",0)
+        score.text = getString(R.string.score) + sharedPref.getInt("score",0)
         btnNextLevel.isEnabled = false
 
         if (gameActivity.currentLevel % 5 == 0) {

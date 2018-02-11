@@ -3,16 +3,22 @@ package com.hwgames.pushmebutton
 
 import android.annotation.SuppressLint
 import android.app.Fragment
+import android.content.res.Configuration
+import android.graphics.Color
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.support.constraint.ConstraintLayout
 import android.support.constraint.ConstraintSet
+import android.util.Log
 import android.util.TypedValue
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.ImageView
 import android.widget.ProgressBar
+import kotlinx.android.synthetic.main.activity_main.*
 import java.lang.Math.round
 import java.util.*
 import kotlin.collections.ArrayList
@@ -25,6 +31,8 @@ import kotlin.collections.HashSet
  */
 class GameFragment : Fragment() {
     val buttonMap = HashMap<Button,Int>()
+    val area = HashMap<ImageView,Int>()
+    val collisions = HashMap<Button,Boolean>()
     var stage = 0
     var switchColours:CountDownTimer? = null
     var timer:CountDownTimer? = null
@@ -32,11 +40,31 @@ class GameFragment : Fragment() {
     var buttonId = 0
     var progress = 0
     lateinit var gameActivity:GameActivity
+    var dx = 0f
+    var dy = 0f
+    var finish:Button? = null
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View {
-        val view = inflater!!.inflate(R.layout.game,container,false)
+        val view:View
         gameActivity = activity as GameActivity
         stage = gameActivity.stage
+        if (stage == 4){
+            if (gameActivity.currentLevel < 36){
+                view = inflater!!.inflate(R.layout.game2,container,false)
+                area[view.findViewById(R.id.greenbox)] = R.color.green
+                area[view.findViewById(R.id.redbox)] = R.color.red
+            } else {
+                view = inflater!!.inflate(R.layout.game3,container,false)
+                area[view.findViewById(R.id.greenbox)] = R.color.green
+                area[view.findViewById(R.id.redbox)] = R.color.red
+                area[view.findViewById(R.id.purplebox)] = R.color.purple
+                area[view.findViewById(R.id.bluebox)] = R.color.blue
+            }
+            finish = view.findViewById(R.id.finish)
+            finish!!.isEnabled = false
+        } else {
+            view = inflater!!.inflate(R.layout.game,container,false)
+        }
         val progressBar = view.findViewById<ProgressBar>(R.id.progressBar)
 
 
@@ -102,7 +130,7 @@ class GameFragment : Fragment() {
                     }
                 }.start()
             }
-            4 -> {
+            5 -> {
                 createButton(view,gameActivity,R.color.green)
                 createButton(view,gameActivity,R.color.red)
                 createButton(view,gameActivity,R.color.purple)
@@ -110,7 +138,7 @@ class GameFragment : Fragment() {
                 createButton(view,gameActivity,R.color.blue)
                 createButton(view,gameActivity,R.color.yellow)
             }
-            5 -> {
+            6 -> {
                 createButton(view,gameActivity,R.color.green)
                 createButton(view,gameActivity,R.color.red)
                 createButton(view,gameActivity,R.color.purple)
@@ -147,6 +175,38 @@ class GameFragment : Fragment() {
                     }
                 }.start()
             }
+            4 -> {
+                if (gameActivity.currentLevel < 36){
+                    collisions[createButton(view,gameActivity,R.color.green)] = false
+                    collisions[createButton(view,gameActivity,R.color.red)] = false
+                } else {
+                    collisions[createButton(view,gameActivity,R.color.green)] = false
+                    collisions[createButton(view,gameActivity,R.color.red)] = false
+                    collisions[createButton(view,gameActivity,R.color.purple)] = false
+                    collisions[createButton(view,gameActivity,R.color.blue)] = false
+                }
+
+
+                for (button in collisions.keys){
+                    button.setOnTouchListener(drag())
+                }
+                finish!!.setOnClickListener({
+                    if (timer != null){
+                        timer!!.cancel()
+                    }
+                    if (switchColours != null){
+                        switchColours!!.cancel()
+                    }
+                    onClick(finish!!,gameActivity)
+                })
+                for (button in collisions.keys){
+                    for (areas in area.keys){
+                        while(collision(areas,button)){
+                            moveButton(view,button.id)
+                        }
+                    }
+                }
+            }
         }
 
         return view
@@ -180,9 +240,16 @@ class GameFragment : Fragment() {
         layout.addView(button)
         button.setBackgroundResource(colour)
         val constraintSet = ConstraintSet()
-        val size = TypedValue.applyDimension(
-                TypedValue.COMPLEX_UNIT_DIP, 40f, resources
-                .displayMetrics).toInt()
+        val size = if ((resources.configuration.screenLayout and Configuration.SCREENLAYOUT_SIZE_MASK) == Configuration.SCREENLAYOUT_SIZE_XLARGE){
+            TypedValue.applyDimension(
+                    TypedValue.COMPLEX_UNIT_DIP, 80f, resources
+                    .displayMetrics).toInt()
+        } else {
+            TypedValue.applyDimension(
+                    TypedValue.COMPLEX_UNIT_DIP, 40f, resources
+                    .displayMetrics).toInt()
+        }
+
         constraintSet.clone(layout)
         constraintSet.connect(button.id, ConstraintSet.BOTTOM, ConstraintSet.PARENT_ID, ConstraintSet.BOTTOM)
         constraintSet.connect(button.id,ConstraintSet.START,ConstraintSet.PARENT_ID,ConstraintSet.START)
@@ -214,7 +281,7 @@ class GameFragment : Fragment() {
     private fun onClick(button: Button, gameActivity: GameActivity){
         var colour = gameActivity.colour
         if (colour == null) colour = R.color.green
-        if (buttonMap[button] == colour || stage == 1){
+        if (buttonMap[button] == colour || stage == 1 || stage == 4){
             gameActivity.displayResult(true)
             val sharedPref = activity.getSharedPreferences("game",0)
             val currentScore = sharedPref.getInt("score",0)
@@ -224,5 +291,58 @@ class GameFragment : Fragment() {
         } else {
             gameActivity.displayResult(false)
         }
+    }
+
+    private fun drag():View.OnTouchListener{
+        return View.OnTouchListener { v, event ->
+            when(event.action){
+                MotionEvent.ACTION_DOWN -> {
+                    dx = v.x - event.rawX
+                    dy = v.y - event.rawY
+                }
+                MotionEvent.ACTION_MOVE -> {
+                    v.x = event.rawX + dx
+                    v.y = event.rawY + dy
+                }
+                MotionEvent.ACTION_UP -> {
+                    for (areas in area.keys){
+                        if (collision(areas,v as Button)){
+                            collisions[v] = true
+                            break
+                        } else {
+                            collisions[v]= false
+                        }
+                    }
+
+                    for (button in collisions.keys){
+                        if (!collisions[button]!!){
+                            finish!!.isEnabled = false
+                            break
+                        } else {
+                            finish!!.isEnabled = true
+                        }
+                    }
+                }
+                else -> {
+                    return@OnTouchListener false
+                }
+            }
+            return@OnTouchListener true
+        }
+    }
+
+    private fun collision(view1:ImageView, view2:Button):Boolean{
+        val x = view1.x + view1.width
+        val y = view1.y + view1.height
+
+        if (area[view1] == buttonMap[view2]){
+            if (view2.x > view1.x && view2.x < x){
+                if (view2.y > view1.y && view2.y < y){
+                    return true
+                }
+            }
+        }
+
+        return false
     }
 }

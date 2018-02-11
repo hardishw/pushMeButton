@@ -42,6 +42,7 @@ class GameActivity : AppCompatActivity() {
 
         val sharedPref = getSharedPreferences("game",0)
         currentLevel = sharedPref.getInt("level",1) - 1
+        currentLevel = 31
         stage = sharedPref.getInt("stage",1)
         Log.w("activity", "level " + currentLevel)
         if (currentLevel + 1 >= maxLevel) {
@@ -63,6 +64,7 @@ class GameActivity : AppCompatActivity() {
 
             when {
                 currentLevel < 11 -> {
+                    stage = 1
                     hint = getString(R.string.hint_stage_1)
                     showLevel()
                     game(1500)
@@ -80,8 +82,15 @@ class GameActivity : AppCompatActivity() {
                     game(1500)
                 }
                 currentLevel < 41 -> {
-                    hint = getString(R.string.hint_stage_4)
+                    hint = "Take me home"
                     stage = 4
+                    time +=2600
+                    showLevel()
+                    game(1500)
+                }
+                currentLevel < 51 -> {
+                    hint = getString(R.string.hint_stage_4)
+                    stage = 5
                     val handler = Handler()
                     showLevel()
                     time /= 2
@@ -92,9 +101,9 @@ class GameActivity : AppCompatActivity() {
                     },1500)
                     game(1600)
                 }
-                currentLevel < 51 -> {
+                currentLevel < 61 -> {
                     hint = getString(R.string.hint_stage_5)
-                    stage = 5
+                    stage = 6
                     val handler = Handler()
                     showLevel()
                     time +=100
