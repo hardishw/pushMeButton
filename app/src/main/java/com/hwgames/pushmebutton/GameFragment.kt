@@ -6,7 +6,6 @@ import android.app.Fragment
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.support.constraint.ConstraintLayout
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
@@ -123,51 +122,6 @@ class GameFragment : Fragment() {
                     }
                 }.start()
             }
-            5 -> {
-                createButton(view,gameActivity,R.color.green)
-                createButton(view,gameActivity,R.color.red)
-                createButton(view,gameActivity,R.color.purple)
-                createButton(view,gameActivity,R.color.orange)
-                createButton(view,gameActivity,R.color.blue)
-                createButton(view,gameActivity,R.color.yellow)
-            }
-            6 -> {
-                createButton(view,gameActivity,R.color.green)
-                createButton(view,gameActivity,R.color.red)
-                createButton(view,gameActivity,R.color.purple)
-                createButton(view,gameActivity,R.color.orange)
-                createButton(view,gameActivity,R.color.blue)
-                createButton(view,gameActivity,R.color.yellow)
-
-//                moveButtons = object: CountDownTimer(gameActivity.time.toLong(),1200){
-//                    override fun onFinish() {
-//
-//                    }
-//
-//                    override fun onTick(p0: Long) {
-//                        for (button in buttons.keys){
-//                            moveButton(view,button.id)
-//                        }
-//                    }
-//                }.start()
-
-                switchColours = object: CountDownTimer(gameActivity.time.toLong(),600){
-                    val random = Random()
-
-                    override fun onFinish() {
-
-                    }
-
-                    override fun onTick(p0: Long) {
-                        val colours = ArrayList<Int>(listOf(R.color.red,R.color.green,R.color.orange,R.color.blue,R.color.yellow,R.color.purple))
-                        for (button in buttons){
-                            val colour = random.nextInt(colours.size)
-                            button.color = colours[colour]
-                            colours.removeAt(colour)
-                        }
-                    }
-                }.start()
-            }
             4 -> {
                 if (gameActivity.currentLevel < 36){
                     collisions[createButton(view,gameActivity,R.color.green)] = false
@@ -192,13 +146,46 @@ class GameFragment : Fragment() {
                     }
                     onClick((finish as GameButton?)!!,gameActivity)
                 })
-                for (button in collisions.keys){
+                for (button in buttons){
                     for (areas in area.keys){
                         while(collision(areas,button)){
                             button.move()
                         }
                     }
                 }
+            }
+            5 -> {
+                createButton(view,gameActivity,R.color.green)
+                createButton(view,gameActivity,R.color.red)
+                createButton(view,gameActivity,R.color.purple)
+                createButton(view,gameActivity,R.color.orange)
+                createButton(view,gameActivity,R.color.blue)
+                createButton(view,gameActivity,R.color.yellow)
+            }
+            6 -> {
+                createButton(view,gameActivity,R.color.green)
+                createButton(view,gameActivity,R.color.red)
+                createButton(view,gameActivity,R.color.purple)
+                createButton(view,gameActivity,R.color.orange)
+                createButton(view,gameActivity,R.color.blue)
+                createButton(view,gameActivity,R.color.yellow)
+
+                switchColours = object: CountDownTimer(gameActivity.time.toLong(),600){
+                    val random = Random()
+
+                    override fun onFinish() {
+
+                    }
+
+                    override fun onTick(p0: Long) {
+                        val colours = ArrayList<Int>(listOf(R.color.red,R.color.green,R.color.orange,R.color.blue,R.color.yellow,R.color.purple))
+                        for (button in buttons){
+                            val colour = random.nextInt(colours.size)
+                            button.color = colours[colour]
+                            colours.removeAt(colour)
+                        }
+                    }
+                }.start()
             }
         }
 
