@@ -144,7 +144,7 @@ class GameFragment : Fragment() {
                     if (switchColours != null){
                         switchColours!!.cancel()
                     }
-                    onClick((finish as GameButton?)!!,gameActivity)
+                    onClick(finish!!,gameActivity)
                 })
                 for (button in buttons){
                     for (areas in area.keys){
@@ -219,10 +219,10 @@ class GameFragment : Fragment() {
     }
 
     @SuppressLint("ApplySharedPref")
-    private fun onClick(button: GameButton, gameActivity: GameActivity){
+    private fun onClick(button: Button, gameActivity: GameActivity){
         var colour = gameActivity.colour
         if (colour == null) colour = R.color.green
-        if (button.color == colour || stage == 4){
+        if (stage == 4 || (button as GameButton).color == colour ){
             gameActivity.displayResult(true)
             val sharedPref = activity.getSharedPreferences("game",0)
             val currentScore = sharedPref.getInt("score",0)

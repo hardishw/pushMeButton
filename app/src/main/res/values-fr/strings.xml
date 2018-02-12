@@ -13,7 +13,8 @@
     <string name="hint_stage_1">Le vert est notre ami</string>
     <string name="hint_stage_2">ça change</string>
     <string name="hint_stage_3">Est-ce que ça a juste bougé?</string>
-    <string name="hint_stage_4">il a clignoté en face de mes yeux</string>
-    <string name="hint_stage_5">ça change pt2</string>
+    <string name="hint_stage_5">il a clignoté en face de mes yeux</string>
+    <string name="hint_stage_6">ça change pt2</string>
     <string name="push_me">Pousse moi!</string>
+    <string name="hint_stage_4">Me traîner à la maison</string>
 </resources>

@@ -1,6 +1,5 @@
 package com.hwgames.pushmebutton
 
-import android.content.Context
 import android.os.Bundle
 import android.os.Handler
 import android.support.v7.app.AppCompatActivity
@@ -9,7 +8,6 @@ import com.google.android.gms.ads.AdListener
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.InterstitialAd
 import com.google.android.gms.ads.MobileAds
-import kotlinx.android.synthetic.main.result.*
 import java.util.*
 
 /**
@@ -81,14 +79,14 @@ class GameActivity : AppCompatActivity() {
                     game(1500)
                 }
                 currentLevel < 41 -> {
-                    hint = "Take me home"
+                    hint = getString(R.string.hint_stage_4)
                     stage = 4
                     time +=2600
                     showLevel()
                     game(1500)
                 }
                 currentLevel < 51 -> {
-                    hint = getString(R.string.hint_stage_4)
+                    hint = getString(R.string.hint_stage_5)
                     stage = 5
                     val handler = Handler()
                     showLevel()
@@ -101,7 +99,7 @@ class GameActivity : AppCompatActivity() {
                     game(1600)
                 }
                 currentLevel < 61 -> {
-                    hint = getString(R.string.hint_stage_5)
+                    hint = getString(R.string.hint_stage_6)
                     stage = 6
                     val handler = Handler()
                     showLevel()

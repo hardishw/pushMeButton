@@ -13,7 +13,8 @@
     <string name="hint_stage_1">Green is our friend</string>
     <string name="hint_stage_2">Switch it up</string>
     <string name="hint_stage_3">Did that just move?</string>
-    <string name="hint_stage_4">it flashed infront of my eyes</string>
-    <string name="hint_stage_5">Switch it up pt2</string>
+    <string name="hint_stage_5">it flashed infront of my eyes</string>
+    <string name="hint_stage_6">Switch it up pt2</string>
     <string name="push_me">Push Me!</string>
+    <string name="hint_stage_4">Drag me home</string>
 </resources>
