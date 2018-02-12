@@ -42,7 +42,6 @@ class GameActivity : AppCompatActivity() {
 
         val sharedPref = getSharedPreferences("game",0)
         currentLevel = sharedPref.getInt("level",1) - 1
-        currentLevel = 31
         stage = sharedPref.getInt("stage",1)
         Log.w("activity", "level " + currentLevel)
         if (currentLevel + 1 >= maxLevel) {

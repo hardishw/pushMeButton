@@ -3,14 +3,10 @@ package com.hwgames.pushmebutton
 
 import android.annotation.SuppressLint
 import android.app.Fragment
-import android.content.res.Configuration
-import android.graphics.Color
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.support.constraint.ConstraintLayout
-import android.support.constraint.ConstraintSet
 import android.util.Log
-import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
@@ -18,26 +14,23 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.ProgressBar
-import kotlinx.android.synthetic.main.activity_main.*
 import java.lang.Math.round
 import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
-import kotlin.collections.HashSet
 
 
 /**
  * Created by hardi on 14/01/2018.
  */
 class GameFragment : Fragment() {
-    val buttonMap = HashMap<Button,Int>()
+    val buttons = ArrayList<GameButton>()
     val area = HashMap<ImageView,Int>()
-    val collisions = HashMap<Button,Boolean>()
+    val collisions = HashMap<GameButton,Boolean>()
     var stage = 0
     var switchColours:CountDownTimer? = null
     var timer:CountDownTimer? = null
     var moveButtons:CountDownTimer? = null
-    var buttonId = 0
     var progress = 0
     lateinit var gameActivity:GameActivity
     var dx = 0f
@@ -96,7 +89,7 @@ class GameFragment : Fragment() {
                     }
 
                     override fun onTick(p0: Long) {
-                        for (button in buttonMap.keys){
+                        for (button in buttons){
                             switchColour(button)
                         }
                     }
@@ -112,7 +105,7 @@ class GameFragment : Fragment() {
                     }
 
                     override fun onTick(p0: Long) {
-                        for (button in buttonMap.keys){
+                        for (button in buttons){
                             switchColour(button)
                         }
                     }
@@ -124,8 +117,8 @@ class GameFragment : Fragment() {
                     }
 
                     override fun onTick(p0: Long) {
-                        for (button in buttonMap.keys){
-                            moveButton(view,button.id)
+                        for (button in buttons){
+                            button.move()
                         }
                     }
                 }.start()
@@ -152,7 +145,7 @@ class GameFragment : Fragment() {
 //                    }
 //
 //                    override fun onTick(p0: Long) {
-//                        for (button in buttonMap.keys){
+//                        for (button in buttons.keys){
 //                            moveButton(view,button.id)
 //                        }
 //                    }
@@ -167,9 +160,9 @@ class GameFragment : Fragment() {
 
                     override fun onTick(p0: Long) {
                         val colours = ArrayList<Int>(listOf(R.color.red,R.color.green,R.color.orange,R.color.blue,R.color.yellow,R.color.purple))
-                        for (button in buttonMap.keys){
+                        for (button in buttons){
                             val colour = random.nextInt(colours.size)
-                            button.setBackgroundResource(colours[colour])
+                            button.color = colours[colour]
                             colours.removeAt(colour)
                         }
                     }
@@ -197,12 +190,12 @@ class GameFragment : Fragment() {
                     if (switchColours != null){
                         switchColours!!.cancel()
                     }
-                    onClick(finish!!,gameActivity)
+                    onClick((finish as GameButton?)!!,gameActivity)
                 })
                 for (button in collisions.keys){
                     for (areas in area.keys){
                         while(collision(areas,button)){
-                            moveButton(view,button.id)
+                            button.move()
                         }
                     }
                 }
@@ -212,22 +205,9 @@ class GameFragment : Fragment() {
         return view
     }
 
-    private fun moveButton(view: View, button: Int){
-        val random = Random()
-        val constraintLayout = view.findViewById<View>(R.id.constraint_layout) as ConstraintLayout
-        val constraintSet = ConstraintSet()
-
-        constraintSet.clone(constraintLayout)
-        constraintSet.setVerticalBias(button, random.nextFloat())
-        constraintSet.setHorizontalBias(button, random.nextFloat())
-        constraintSet.applyTo(constraintLayout)
-    }
-
-    private fun createButton(view: View, activity: GameActivity, colour: Int):Button {
-        val random = Random()
+    private fun createButton(view: View, activity: GameActivity, colour: Int):GameButton {
         val layout = view.findViewById<ConstraintLayout>(R.id.constraint_layout)
-        val button = Button(activity)
-        button.id = buttonId++
+        val button = GameButton(activity,layout,colour)
         button.setOnClickListener({
             if (timer != null){
                 timer!!.cancel()
@@ -237,51 +217,25 @@ class GameFragment : Fragment() {
             }
             onClick(button,activity)
         })
-        layout.addView(button)
-        button.setBackgroundResource(colour)
-        val constraintSet = ConstraintSet()
-        val size = if ((resources.configuration.screenLayout and Configuration.SCREENLAYOUT_SIZE_MASK) == Configuration.SCREENLAYOUT_SIZE_XLARGE){
-            TypedValue.applyDimension(
-                    TypedValue.COMPLEX_UNIT_DIP, 80f, resources
-                    .displayMetrics).toInt()
-        } else {
-            TypedValue.applyDimension(
-                    TypedValue.COMPLEX_UNIT_DIP, 40f, resources
-                    .displayMetrics).toInt()
-        }
 
-        constraintSet.clone(layout)
-        constraintSet.connect(button.id, ConstraintSet.BOTTOM, ConstraintSet.PARENT_ID, ConstraintSet.BOTTOM)
-        constraintSet.connect(button.id,ConstraintSet.START,ConstraintSet.PARENT_ID,ConstraintSet.START)
-        constraintSet.connect(button.id,ConstraintSet.TOP,ConstraintSet.PARENT_ID,ConstraintSet.TOP)
-        constraintSet.connect(button.id,ConstraintSet.END,ConstraintSet.PARENT_ID,ConstraintSet.END)
-        constraintSet.constrainHeight(button.id,size)
-        constraintSet.constrainWidth(button.id,size)
-        constraintSet.setVerticalBias(button.id, random.nextFloat())
-        constraintSet.setHorizontalBias(button.id, random.nextFloat())
-        constraintSet.applyTo(layout)
-
-
-        buttonMap[button] = colour
+        buttons.add(button)
 
         return button
     }
 
-    private fun switchColour(button: Button){
-        if (buttonMap[button] == R.color.green){
-            button.setBackgroundResource(R.color.red)
-            buttonMap[button] = R.color.red
+    private fun switchColour(button: GameButton){
+        if (button.color == R.color.green){
+            button.color = (R.color.red)
         } else {
-            button.setBackgroundResource(R.color.green)
-            buttonMap[button] = R.color.green
+            button.color = R.color.green
         }
     }
 
     @SuppressLint("ApplySharedPref")
-    private fun onClick(button: Button, gameActivity: GameActivity){
+    private fun onClick(button: GameButton, gameActivity: GameActivity){
         var colour = gameActivity.colour
         if (colour == null) colour = R.color.green
-        if (buttonMap[button] == colour || stage == 1 || stage == 4){
+        if (button.color == colour || stage == 4){
             gameActivity.displayResult(true)
             val sharedPref = activity.getSharedPreferences("game",0)
             val currentScore = sharedPref.getInt("score",0)
@@ -306,7 +260,7 @@ class GameFragment : Fragment() {
                 }
                 MotionEvent.ACTION_UP -> {
                     for (areas in area.keys){
-                        if (collision(areas,v as Button)){
+                        if (collision(areas,v as GameButton)){
                             collisions[v] = true
                             break
                         } else {
@@ -331,11 +285,11 @@ class GameFragment : Fragment() {
         }
     }
 
-    private fun collision(view1:ImageView, view2:Button):Boolean{
+    private fun collision(view1:ImageView, view2:GameButton):Boolean{
         val x = view1.x + view1.width
         val y = view1.y + view1.height
 
-        if (area[view1] == buttonMap[view2]){
+        if (area[view1] == view2.color){
             if (view2.x > view1.x && view2.x < x){
                 if (view2.y > view1.y && view2.y < y){
                     return true
