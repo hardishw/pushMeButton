@@ -81,7 +81,7 @@ class GameActivity : AppCompatActivity() {
                 currentLevel < 41 -> {
                     hint = getString(R.string.hint_stage_4)
                     stage = 4
-                    time +=2600
+                    time +=2800
                     showLevel()
                     game(1500)
                 }
